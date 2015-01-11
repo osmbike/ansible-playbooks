@@ -1,0 +1,3 @@
+This directory will be mounted as /data
+
+Its purpose is to avoid re-downloading big data files during testing.

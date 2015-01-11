@@ -29,7 +29,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder "./data", "/data"
+
+  # Do not share PWD
+  config.vm.synced_folder ".", "/vagrant", disabled: true
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -43,7 +46,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Enable provisioning with Ansible.
   config.vm.provision "ansible" do |ansible|
     ansible.inventory_path = "hosts"
-    ansible.playbook = "playbooks/example1.yml"
+    ansible.playbook = "playbooks/osmdb.yml"
     ansible.verbose = "-vv"
     ansible.sudo = true
     ansible.limit = 'all'
