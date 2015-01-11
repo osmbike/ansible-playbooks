@@ -1,0 +1,56 @@
+---
+- name: ensure apt cache is up to date
+  apt: update_cache=yes cache_valid_time=3600
+  sudo: yes
+
+- name: ensure PostGIS packages are installed
+  action: apt pkg={{item}} state=latest
+  with_items:
+    - postgresql
+    - postgresql-contrib
+    - postgis
+    - postgresql-9.3-postgis-2.1
+    - python-psycopg2
+
+- name: ensure PostGIS user exists
+  postgresql_user: name={{database_user}}
+  sudo: yes
+  sudo_user: postgres
+
+- name: ensure database exists
+  postgresql_db: name={{database_name}} owner={{database_user}} encoding='UTF-8'
+  sudo: yes
+  sudo_user: postgres
+
+- name: ensure hstore extension is enabled
+  sudo: yes
+  sudo_user: postgres
+  command: psql -d {{database_name}} -c 'CREATE EXTENSION IF NOT EXISTS hstore;'
+  register: hstore_cmd
+  changed_when: hstore_cmd.stderr == ""
+
+- name: ensure postgis extension is enabled
+  sudo: yes
+  sudo_user: postgres
+  command: psql -d {{database_name}} -c 'CREATE EXTENSION IF NOT EXISTS postgis;'
+  changed_when: hstore_cmd.stderr == ""
+  register: createdb_postgis
+
+- name: enable read access to spatial_ref_sys
+  sudo: yes
+  sudo_user: postgres
+  command: psql -d {{database_name}} -c 'GRANT SELECT ON spatial_ref_sys TO PUBLIC;'
+  when: createdb_postgis.changed
+
+- name: grant geometry_columns access to user
+  sudo: yes
+  sudo_user: postgres
+  command: psql -d {{database_name}} -c 'GRANT ALL ON geometry_columns TO {{database_user}};'
+  when: createdb_postgis.changed
+
+- name: ensure postgres is running
+  sudo: yes
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
