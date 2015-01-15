@@ -1,9 +1,0 @@
----
-# vim:ff=unix ts=2 sw=2 ai expandtab
--
-  hosts: 192.168.33.10
-  gather_facts: False
-  remote_user: vagrant
-  tasks:
-    - name: Echo hello
-      command: echo hello, world
