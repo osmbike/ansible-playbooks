@@ -9,7 +9,3 @@
 
   roles:      
     - { role: postgis, database_name: '{{database_name}}', database_user: '{{database_user}}' }
-
-  handlers:
-   - name: restart postgresql
-     action: service name=postgresql state=restarted 
