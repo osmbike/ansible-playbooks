@@ -1,0 +1,27 @@
+---
+# vim:ff=unix ts=2 sw=2 ai sts=1 expandtab
+
+- name: ensure osm2pgsql package is installed
+  action: apt pkg=osm2pgsql state=latest
+  sudo: yes
+
+- name: get md5sum file
+  get_url: dest='/data/{{datafile}}.md5' url='{{md5sum_url}}'
+
+- name: get data file
+  get_url: dest='/data/{{datafile}}' url='{{data_url}}'
+  register: data
+
+- name: check md5sum
+  command: 'md5sum -c {{datafile}}.md5'
+  args:
+    chdir: /data/
+  changed_when: false
+
+- name: import data
+  # FIXME import never happens if datafile is downloaded manually
+  # TODO less verbose import
+  command: 'osm2pgsql --create --slim --cache 2048 --username {{database_user}} --database {{database_name}} --prefix planet --hstore /data/{{datafile}}'
+  when: data.changed
+  sudo: yes
+  sudo_user: '{{database_user}}'

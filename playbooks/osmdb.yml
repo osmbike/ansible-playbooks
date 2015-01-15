@@ -1,11 +1,15 @@
 ---
 # vim:ff=unix ts=2 sw=2 ai sts=1 expandtab
+# intended for Ubuntu 14.04 LTS
 -
   hosts: osmdb
   remote_user: vagrant
   vars:
     database_name: osm
-    database_user: osm 
+    mapnik_user: osm
 
   roles:      
-    - { role: postgis, database_name: '{{database_name}}', database_user: '{{database_user}}' }
+    - { role: debian-server, user: '{{mapnik_user}}' }
+    - { role: postgis, database_name: '{{database_name}}', database_user: '{{mapnik_user}}' }
+    - { role: osm2pgsql-import, database_name: '{{database_name}}', database_user: '{{mapnik_user}}' }
+    - mapnik

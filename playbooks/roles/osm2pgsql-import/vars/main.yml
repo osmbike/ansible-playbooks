@@ -1,0 +1,5 @@
+---
+# datafile must match filename in .md5!
+datafile: berlin-latest.osm.pbf
+data_url: http://download.geofabrik.de/europe/germany/berlin-latest.osm.pbf
+md5sum_url: http://download.geofabrik.de/europe/germany/berlin-latest.osm.pbf.md5

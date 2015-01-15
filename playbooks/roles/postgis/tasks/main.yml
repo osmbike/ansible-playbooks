@@ -1,8 +1,4 @@
 ---
-- name: ensure apt cache is up to date
-  apt: update_cache=yes cache_valid_time=3600
-  sudo: yes
-
 - name: ensure PostGIS packages are installed
   action: apt pkg={{item}} state=latest
   with_items:

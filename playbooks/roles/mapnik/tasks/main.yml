@@ -1,0 +1,11 @@
+---
+# vim:ff=unix ts=2 sw=2 ai sts=1 expandtab
+
+- name: ensure mapnik packages are installed
+  action: apt pkg={{item}} state=latest
+  with_items:
+    - libmapnik2.2
+    - libmapnik-dev
+    - mapnik-utils
+    -  python-mapnik
+  sudo: yes
