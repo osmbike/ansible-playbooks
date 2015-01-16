@@ -7,5 +7,34 @@
     - libmapnik2.2
     - libmapnik-dev
     - mapnik-utils
-    -  python-mapnik
+    - python-mapnik
+    - unzip # for coastlines
   sudo: yes
+
+- name: ensure vector tile dependencies are installed
+  action: apt pkg={{item}} state=latest
+  with_items:
+    - build-essential
+    - libprotobuf8
+    - libprotobuf-dev
+    - protobuf-compiler
+  sudo: yes
+
+- name: ensure fonts are available
+  action: apt pkg={{item}} state=latest
+  with_items:
+    - ttf-dejavu
+    - fonts-droid
+    - ttf-unifont
+    - fonts-sipa-arundina
+    - fonts-sil-padauk
+    - fonts-khmeros
+    - ttf-indic-fonts-core
+    - ttf-tamil-fonts
+    - ttf-kannada-fonts
+
+- name: ensure simple land polygons are downloaded
+  get_url: dest='/data/simplified-land-polygons-complete-3857.zip' url='http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip'
+
+- name: ensure land polygons are downloaded
+  get_url: dest='/data/land-polygons-split-3857.zip' url='http://data.openstreetmapdata.com/land-polygons-split-3857.zip'
