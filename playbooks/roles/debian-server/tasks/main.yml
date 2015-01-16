@@ -5,5 +5,14 @@
   apt: update_cache=yes cache_valid_time=3600
   sudo: yes
 
+- name: ensure fail2ban is installed
+  apt: pkg=fail2ban state=latest
+
+- name: upgrade all packages
+  apt: upgrade=full
+
+- name: enable unattended security upgrades
+  apt: pkg=unattended-upgrades state=latest
+
 - name: ensure user account exists
   user: name='{{user}}'
