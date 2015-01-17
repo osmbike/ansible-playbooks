@@ -1,18 +1,26 @@
 ---
 # vim:ff=unix ts=2 sw=2 ai sts=1 expandtab
 
-- name: ensure apt cache is up to date
+- name: Ensure apt cache is up to date
   apt: update_cache=yes cache_valid_time=3600
   sudo: yes
 
-- name: ensure fail2ban is installed
+- name: Ensure fail2ban is installed
   apt: pkg=fail2ban state=latest
 
-- name: upgrade all packages
+- name: Upgrade all packages
   apt: upgrade=full
 
-- name: enable unattended security upgrades
+- name: Enable unattended security upgrades
   apt: pkg=unattended-upgrades state=latest
 
-- name: ensure user account exists
+- name: Disallow root SSH access
+  action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
+  notify: Restart sshd
+
+- name: Disallow password authentication
+  action: lineinfile dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
+  notify: Restart sshd
+
+- name: Ensure user account exists
   user: name='{{user}}'
