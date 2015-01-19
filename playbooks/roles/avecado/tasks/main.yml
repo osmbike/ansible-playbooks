@@ -1,0 +1,95 @@
+---
+- name: Install dependencies
+  action: apt pkg={{item}} state=latest
+  with_items:
+    - build-essential
+    - autoconf
+    - automake
+    - libtool
+    - libboost-all-dev
+    - python-dev
+    - libprotobuf-dev
+    - protobuf-compiler
+    - git
+    - libicu-dev
+    - libxml2
+    - libxml2-dev
+    - libfreetype6
+    - libfreetype6-dev
+    - libjpeg-dev
+    - libpng-dev
+    - libproj-dev
+    - libtiff-dev
+    - libcairo2
+    - libcairo2-dev
+    - python-cairo
+    - python-cairo-dev
+    - libcairomm-1.0-1
+    - libcairomm-1.0-dev
+    - ttf-unifont
+    - ttf-dejavu
+    - ttf-dejavu-core
+    - ttf-dejavu-extra
+    - python-nose
+    - libgdal1-dev
+    - python-gdal
+    - libsqlite3-dev
+    - postgresql-9.3
+    - postgresql-server-dev-9.3
+    - postgresql-contrib-9.3
+    - postgresql-9.3-postgis-2.1
+    - libharfbuzz-dev
+  sudo: true
+
+  # TODO make sure boost 1.56 is available
+
+- name: Checkout mapnik repository
+  git: repo=https://github.com/mapnik/mapnik.git
+       dest=mapnik
+       version={{mapnik_version}}
+  register: mapnik_repo
+  sudo_user: vagrant
+
+- name: uninstall old mapnik version
+  action: shell cd mapnik && make uninstall
+  sudo: yes
+  when: mapnik_repo.changed
+
+- name: Compile and install mapnik
+  action: shell cd mapnik && ./configure && make && make install
+          creates=/usr/local/bin/mapnik-config
+  sudo: yes
+
+#- name: Add mapnik nightly PPA
+#  apt_repository: repo='ppa:mapnik/nightly-trunk'
+#  sudo: true
+#
+#- name: Install mapnik
+#  action: apt pkg={{item}} state=latest
+#  with_items:
+#    - libmapnik
+#    - libmapnik-dev
+#    - mapnik-utils
+#    - python-mapnik
+#  sudo: true
+#
+#- name: Install mapnik plugins
+#  action: apt pkg={{item}} state=latest
+#  with_items:
+#    - mapnik-input-plugin-gdal
+#    - mapnik-input-plugin-ogr
+#    - mapnik-input-plugin-postgis
+#    - mapnik-input-plugin-sqlite
+#    - mapnik-input-plugin-osm
+#  sudo: true
+
+- name: Checkout avecado repository
+  git: repo=https://github.com/MapQuest/avecado.git
+       dest=avecado
+       version={{avecado_version}}
+  sudo_user: vagrant
+
+- name: Compile and install avecado
+  shell: cd avecado && ./autogen.sh && CPPFLAGS="-DBOOST_MPL_CFG_NO_PREPROCESSED_HEADERS -DBOOST_MPL_LIMIT_VECTOR_SIZE=30" ./configure && make && make install
+         creates=/usr/local/bin/avecado
+  sudo: yes
