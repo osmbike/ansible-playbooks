@@ -17,9 +17,9 @@
     - libfreetype6
     - libfreetype6-dev
     - libjpeg-dev
-    - libpng-dev
+    - libpng12-dev
     - libproj-dev
-    - libtiff-dev
+    - libtiff5-dev
     - libcairo2
     - libcairo2-dev
     - python-cairo
