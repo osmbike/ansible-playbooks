@@ -60,29 +60,6 @@
           creates=/usr/local/bin/mapnik-config
   sudo: yes
 
-#- name: Add mapnik nightly PPA
-#  apt_repository: repo='ppa:mapnik/nightly-trunk'
-#  sudo: true
-#
-#- name: Install mapnik
-#  action: apt pkg={{item}} state=latest
-#  with_items:
-#    - libmapnik
-#    - libmapnik-dev
-#    - mapnik-utils
-#    - python-mapnik
-#  sudo: true
-#
-#- name: Install mapnik plugins
-#  action: apt pkg={{item}} state=latest
-#  with_items:
-#    - mapnik-input-plugin-gdal
-#    - mapnik-input-plugin-ogr
-#    - mapnik-input-plugin-postgis
-#    - mapnik-input-plugin-sqlite
-#    - mapnik-input-plugin-osm
-#  sudo: true
-
 - name: Checkout avecado repository
   git: repo=https://github.com/MapQuest/avecado.git
        dest=avecado
