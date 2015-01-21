@@ -1,0 +1,30 @@
+---
+- name: Install dependencies
+  apt: name={{item}} state=installed
+  with_items:
+    - build-essential
+    - python-dev
+    - libbz2-dev
+  sudo: yes
+
+- name: Ensure workdir exists
+  file: path={{boost_workdir}} state=directory
+
+- name: Download source
+  get_url: url='http://downloads.sourceforge.net/project/boost/boost/{{boost_version}}/{{boost_underscore}}.tar.bz2' dest='/data/{{boost_underscore}}.tar.bz2'
+
+- name: Unpack
+  unarchive: copy=no src=/data/{{boost_underscore}}.tar.bz2 dest={{boost_workdir}}
+  register: boost_unpack
+
+- name: Bootstrap
+  command: chdir={{boost_workdir}}/{{boost_underscore}} ./bootstrap.sh
+  when: boost_unpack.changed
+
+- name: Make
+  command: chdir={{boost_workdir}}/{{boost_underscore}} ./b2
+  when: boost_unpack.changed
+
+- name: Install
+  command: chdir={{boost_workdir}}/{{boost_underscore}} ./b2 install
+  sudo: yes

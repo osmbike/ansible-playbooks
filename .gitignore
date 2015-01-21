@@ -24,6 +24,4 @@ Gemfile.lock
 
 # Vagrant
 /.vagrant/
-data/*.pbf
-data/*.md5
-data/*.zip
+data/*
