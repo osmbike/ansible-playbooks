@@ -12,4 +12,5 @@
     - { role: debian-server, user: '{{mapnik_user}}' }
     - { role: postgis, database_name: '{{database_name}}', database_user: '{{mapnik_user}}' }
     - { role: osm2pgsql-import, database_name: '{{database_name}}', database_user: '{{mapnik_user}}' }
-    - mapnik
+    - boost
+    - avecado
